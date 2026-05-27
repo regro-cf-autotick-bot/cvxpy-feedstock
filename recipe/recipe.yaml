@@ -51,7 +51,7 @@ outputs:
       run:
         - python
         - scipy >=1.13.0
-        - qdldl-python >= 0.1.7.post0
+        - qdldl-python >= 0.1.7.post5
         # default run-export of numpy is too loose (>=1.23,<3); cvxpy really needs >=2
         - numpy >=2
     tests:
