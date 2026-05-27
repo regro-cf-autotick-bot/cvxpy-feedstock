@@ -1,5 +1,5 @@
 context:
-  version: "1.8.2"
+  version: "1.9.1"
 
 recipe:
   name: cvxpy-split
@@ -7,13 +7,13 @@ recipe:
 
 source:
   - url: https://github.com/cvxpy/cvxpy/archive/refs/tags/v${{ version }}.tar.gz
-    sha256: 97acf67b4fb628c810f738279009c2933d4a20b8045a2724169c905c836e0947
+    sha256: 83a17faa853153bf91beac441ea18fa68bf84d218796b03b3d2779083c151b40
     patches:
       # test that fails due to timing issues on slow CI agents when in emulation
       - patches/0001-loosen-time-limit-in-test_scipy_mi_time_limit_reache.patch
 
 build:
-  number: 1
+  number: 0
   skip:
     - match(python, "<3.11")
 
@@ -51,6 +51,9 @@ outputs:
       run:
         - python
         - scipy >=1.13.0
+        - qdldl-python >= 0.1.7.post5
+        # default run-export of numpy is too loose (>=1.23,<3); cvxpy really needs >=2
+        - numpy >=2
     tests:
       - python:
           imports:
@@ -71,9 +74,7 @@ outputs:
       run:
         - python
         - ${{ pin_subpackage('cvxpy-base', exact=True) }}
-        # default run-export of numpy is too loose (>=1.23,<3); cvxpy really needs >=2
-        - numpy >=2
-        - highspy >=1.11.0,!=1.14.0
+        - highspy >=1.14.0
         - osqp >=1.0.0
         - clarabel >=0.5
         - scs >=3.2.4
@@ -104,6 +105,9 @@ outputs:
             - if: ppc64le
               then:
                 - 'tests_to_skip += " or (TestDqcp and test_basic_multiply)"'
+            # hypothesis DeadlineExceeded; test's 200ms per-example deadline
+            # is too tight for CI runners (seen on QEMU and osx_64)
+            - 'tests_to_skip += " or test_nd_broadcast_generated"'
             # test that fails on Python 3.13
             - if: match(python, "==3.13")
               then:
