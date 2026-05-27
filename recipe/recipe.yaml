@@ -105,6 +105,10 @@ outputs:
             - if: ppc64le
               then:
                 - 'tests_to_skip += " or (TestDqcp and test_basic_multiply)"'
+            # hypothesis DeadlineExceeded on emulated archs (QEMU)
+            - if: aarch64 or ppc64le
+              then:
+                - 'tests_to_skip += " or test_nd_broadcast_generated"'
             # test that fails on Python 3.13
             - if: match(python, "==3.13")
               then:
