@@ -11,6 +11,8 @@ source:
     patches:
       # test that fails due to timing issues on slow CI agents when in emulation
       - patches/0001-loosen-time-limit-in-test_scipy_mi_time_limit_reache.patch
+      # hypothesis deadline is flaky on osx_64 with Python 3.13
+      - patches/0002-disable-deadline-for-test_nd_bool_index.patch
 
 build:
   number: 0
