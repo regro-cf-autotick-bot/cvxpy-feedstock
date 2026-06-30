@@ -31,7 +31,7 @@ outputs:
             - rm $SRC_DIR/pyproject.toml
           else:
             - del %SRC_DIR%\pyproject.toml
-        - python -m pip install . --no-deps -vvv
+        - python -m pip install . --no-deps --no-build-isolation -vvv
     requirements:
       build:
         - if: build_platform != target_platform
