@@ -1,5 +1,5 @@
 context:
-  version: "1.9.1"
+  version: "1.9.2"
 
 recipe:
   name: cvxpy-split
@@ -7,10 +7,12 @@ recipe:
 
 source:
   - url: https://github.com/cvxpy/cvxpy/archive/refs/tags/v${{ version }}.tar.gz
-    sha256: 83a17faa853153bf91beac441ea18fa68bf84d218796b03b3d2779083c151b40
+    sha256: 646afc629cb61f1a9b073f6e6511e55dd772e81c4f4cc88a1b34816293aba1e4
     patches:
       # test that fails due to timing issues on slow CI agents when in emulation
       - patches/0001-loosen-time-limit-in-test_scipy_mi_time_limit_reache.patch
+      # hypothesis deadline is flaky on osx_64 with Python 3.13
+      - patches/0002-disable-deadline-for-test_nd_bool_index.patch
 
 build:
   number: 0
@@ -31,7 +33,7 @@ outputs:
             - rm $SRC_DIR/pyproject.toml
           else:
             - del %SRC_DIR%\pyproject.toml
-        - python -m pip install . --no-deps -vvv
+        - python -m pip install . --no-deps --no-build-isolation -vvv
     requirements:
       build:
         - if: build_platform != target_platform

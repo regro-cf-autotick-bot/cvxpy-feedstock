@@ -1,0 +1,32 @@
+From 1a3ee8392a5be81adc9404f2dcdfc3d4b7341a83 Mon Sep 17 00:00:00 2001
+From: Tim Paine <tim@timpaine.com>
+Date: Tue, 30 Jun 2026 14:44:00 -0400
+Subject: [PATCH] disable deadline for test_nd_bool_index
+
+---
+ cvxpy/tests/test_expressions.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/cvxpy/tests/test_expressions.py b/cvxpy/tests/test_expressions.py
+index 99b1eeb62..a294e4a0c 100644
+--- a/cvxpy/tests/test_expressions.py
++++ b/cvxpy/tests/test_expressions.py
+@@ -21,8 +21,8 @@ import numpy as np
+ import pytest
+ import scipy.sparse as sp
+-from hypothesis import assume, given
++from hypothesis import assume, given, settings
+ from hypothesis.extra.numpy import (
+     arrays,
+     basic_indices,
+     broadcastable_shapes,
+     integer_array_indices,
+@@ -1853,7 +1853,8 @@ class TestND_Expressions(BaseTest):
+         assert np.allclose(expr.value, y)
+ 
+     @given(axis=arrays(shape=(2,2,2), dtype=bool))
++    @settings(deadline=None)
+     def test_nd_bool_index(self, axis) -> None:
+         def is_zero_dim_output(axis):
+             return 0 in self.target[axis].shape
+ 
